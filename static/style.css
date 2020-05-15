@@ -1,0 +1,75 @@
+body,html
+{
+  padding:0;
+  margin:0;
+  height:100%;
+  width:100%;
+  background-color:#f9f9f9;
+}
+
+.download
+{
+  border:0px ;
+  font-size:16px;
+  width:400px;
+  margin-top:20px;
+  background-color: #FF6347 !important;
+  box-shadow: 0 -3px #FF4500 inset !important;
+}
+
+.download:hover { background-color: #FF4500 !important; }
+.download:active {
+    background: rgb(33,147,90);
+    box-shadow: 0 3px rgb(33,147,90) inset;
+}
+
+#title
+{
+  font-size:18px;
+  font-family:'Ubuntu';
+  color:#C3C3C3;
+}
+
+.report_form
+{
+  display:flex;
+
+  justify-content:center;
+  align-items:center;
+  flex-direction:column;
+  height:100%;
+}
+
+.form__report
+{
+flex-direction:column;
+  background-color:white;
+  border: 3px dashed #c3c3c3 ;
+  width:400px;
+  height:400px;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+}
+
+.form__btn {
+    box-sizing:border-box;
+    text-align:center;
+    cursor:pointer;
+    font-family:'Ubuntu';
+    display:block;
+    font-weight: 700;
+    color: white;
+    text-decoration: none;
+    padding: .8em 1em calc(.8em + 3px);
+    border-radius: 3px;
+    background: rgb(64,199,129);
+    box-shadow: 0 -3px rgb(53,167,110) inset;
+    transition: 0.2s;
+}
+
+.form__btn:hover { background: rgb(53, 167, 110); }
+.form__btn:active {
+    background: rgb(33,147,90);
+    box-shadow: 0 3px rgb(33,147,90) inset;
+}

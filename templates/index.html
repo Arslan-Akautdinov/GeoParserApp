@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+    <meta charset="utf-8" />
+    <title>Geo calculator</title>
+    <link href="https://fonts.googleapis.com/css?family=Ubuntu:300,400&display=swap" rel="stylesheet">
+    <link href="{{ url_for('static',filename='style.css') }}" rel="stylesheet">
+    <script src="{{ url_for('static',filename='index.js') }}"></script>
+</head>
+<body>
+
+    {% if resp is not defined %}
+    <form class="report_form" action="/save" method="POST" enctype="multipart/form-data">
+        <div class="form__report">
+            <p id="title"></p>
+            <label for="file" class="form__btn">Выберите файл</label>
+            <input onchange="upload(this.files)" accept=".txt" id="file" style="display:none;" placeholder="" type="file" name="file">
+        </div>
+        {% if resp is not defined %}
+            <input id="send_btn" style="display:none;" type="submit" class="form__btn download" value="Отправить на обработку">
+        {% endif %}
+    </form>
+
+   {% endif %}
+    {% if resp is defined %}
+        {% if resp["response"] == True %}
+        <div class="report_form">
+        <a  href="/uploads/{{resp['filename']}}.xlsx" type="submit" class="form__btn download" >Загрузить отчет</a>
+        <a  href="/" type="submit" class="form__btn download" >Выбрать другой файл</a>
+       </div>
+        {% endif %}
+    {% endif %}
+
+</body>
+</html>
