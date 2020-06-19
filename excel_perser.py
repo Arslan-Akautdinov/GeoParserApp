@@ -29,6 +29,10 @@ class ExcelParser:
             row += 1
 
         worksheet.write(0, last_cell, "СУММА ВСЕХ ОСАДКОВ")
-        worksheet.write(1, last_cell, self.data.rain_fall)
+
+        row = 1
+        for rain in self.data.rain_fall:
+            worksheet.write(row, last_cell, rain)
+            row += 1
 
         workbook.close()

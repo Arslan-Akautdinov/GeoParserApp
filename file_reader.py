@@ -4,52 +4,53 @@ import json
 class FileReader:
 
     def __init__(self, text, col_path):
-
         self.text = text
-        file = open(col_path, "w").readlines()
-        self.columns = json.loads(file)
+        with open(col_path) as json_file:
+            self.columns = json.loads(json_file.read())
         self.list = self.calculating()
         self.rain_fall = self.get_rainfall(self.list)
+
 
     @staticmethod
     def get_average(data):
 
         clean_list = []
 
-        for item in data:
-
-            row = 0
-            col = 0
+        for date in data:
             values = []
-            current_sum = 0
-            current_date = item["date"]
+            col_count = len(date["values"][0])
+            cur_date = date["date"]
+            values.append(cur_date)
+            values.append("с 00:30 до 00:00")
+            second_col = []
 
-            while row < len(item["values"]):
+            for col in range(2, col_count):
+
+                row_count = len(date["values"])
+                current_sum = 0
                 is_float = False
-                value = item["values"][row][col]
 
-                try:
-                    current_sum += float(value.replace(",", "."))
-                    is_float = True
-                    row += 1
-                except Exception as ex:
-                    print(ex)
+                for row in range(0, row_count):
+                    try:
+                        value = date["values"][row][col]
+                    except Exception as ex:
+                        break
 
-                if is_float is not False:
-                    if row == len(item["values"]) - 1:
-                        values.append(current_sum/row)
-                        current_sum = 0
-                        row = 0
-                        col += 1
-                else:
-                    col += 1
-                    current_sum = 0
-                    row = 0
-                    values.append(value)
+                    try:
+                        current_sum += float(value.replace(",", "."))
+                        is_float = True
+                    except Exception as ex:
+                        values.append(value)
+                        is_float = False
+                        break
 
-                if col == len(item["values"][0]) - 1:
-                    clean_list.append({"date": current_date, "middle": values.copy()})
-                    break
+                    if col == 2:
+                        second_col.append(value)
+
+                if is_float:
+                    values.append(current_sum/row_count)
+
+            clean_list.append({"date": cur_date, "middle": values.copy()})
 
         return clean_list
 
@@ -78,14 +79,16 @@ class FileReader:
             # Врменное хранилище информации.
             temp_collection.append(group)
 
-            # Условие для записи последнего дня.
-            last_day_record = current_time == "00:00" and date_count == len(dates) - 2
-
             # Если текущая дата не равна следующей и имеет время 0:30 или дата последняя.
-            if current_date != prev_date and current_time == "0:30" or last_day_record:
+            if current_date != prev_date:
+
+                result = {"date": prev_date, "values": temp_collection.copy()}
+
+                if result["values"][0][1] == "00:00":
+                    result["values"].remove(result["values"][0])
 
                 # Добавляем дату.
-                data.append({"date": prev_date, "values": temp_collection.copy()})
+                data.append(result)
 
                 # Очищаем список.
                 temp_collection.clear()
@@ -131,17 +134,17 @@ class FileReader:
 
     @staticmethod
     def get_rainfall(data):
-        sum_rain = 0
+        result = []
         for rain_fall in data:
-            sum_rain += rain_fall["middle"][17]
-        return sum_rain
+            try:
+                value = float(rain_fall["middle"][17])
+                result.append(value * 48)
+            except Exception as ex:
+                result.append(rain_fall["middle"][17])
+        return result
 
     def calculating(self):
-
         groups = self.get_groups(self.text)
-
         dates = self.get_dates(groups)
-
         data = self.get_data(groups, dates)
-
         return self.get_average(data)
