@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# _*_ coding: utf-8
 import xlsxwriter
 from file_reader import FileReader
 

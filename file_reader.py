@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# _*_ coding: utf-8
 import json
 
 
@@ -5,10 +7,11 @@ class FileReader:
 
     def __init__(self, text, col_path):
         self.text = text
-        with open(col_path) as json_file:
+        with open(col_path, encoding="UTF-8") as json_file:
             self.columns = json.loads(json_file.read())
         self.list = self.calculating()
         self.rain_fall = self.get_rainfall(self.list)
+
 
 
     @staticmethod
@@ -27,28 +30,35 @@ class FileReader:
             for col in range(2, col_count):
 
                 row_count = len(date["values"])
+                values_counter = 0
                 current_sum = 0
-                is_float = False
+                is_added = False
 
                 for row in range(0, row_count):
-                    try:
-                        value = date["values"][row][col]
-                    except Exception as ex:
-                        break
 
+                    # Get value
+                    value = date["values"][row][col]
+
+                    # Set value type
                     try:
-                        current_sum += float(value.replace(",", "."))
-                        is_float = True
-                    except Exception as ex:
+                        if value == "---":
+                            value = 0
+                        else:
+                            value = float(value.replace(",", "."))
+                        current_sum += value
+                        values_counter += 1
+                    except ValueError:
                         values.append(value)
-                        is_float = False
+                        is_added = True
                         break
 
                     if col == 2:
                         second_col.append(value)
 
-                if is_float:
+                if current_sum != 0 and is_added is False:
                     values.append(current_sum/row_count)
+                elif current_sum == 0 and is_added is False:
+                    values.append("---")
 
             clean_list.append({"date": cur_date, "middle": values.copy()})
 
