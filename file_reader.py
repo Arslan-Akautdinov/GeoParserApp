@@ -41,13 +41,16 @@ class FileReader:
 
                     # Set value type
                     try:
+                        values_counter += 1
                         if value == "---":
                             value = 0
+                            values_counter -= 1
                         else:
                             value = float(value.replace(",", "."))
                         current_sum += value
-                        values_counter += 1
+
                     except ValueError:
+                        values_counter -= 1
                         values.append(value)
                         is_added = True
                         break
@@ -56,7 +59,8 @@ class FileReader:
                         second_col.append(value)
 
                 if current_sum != 0 and is_added is False:
-                    values.append(current_sum/row_count)
+                    print(values_counter)
+                    values.append(current_sum/values_counter)
                 elif current_sum == 0 and is_added is False:
                     values.append("---")
 
